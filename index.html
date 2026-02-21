@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Happy Birthday Waris 🎂</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <style>
@@ -10,7 +10,7 @@
 html{scroll-behavior:smooth;}
 body{
   font-family:'DM Sans',sans-serif;
-  background:#fdf8f3;
+  background:#fdf4f0;
   color:#1a1a1a;
   overflow-x:hidden;
 }
@@ -32,28 +32,141 @@ body{
   --border:   #e8ddd6;
   --warm:     #fdf8f3;
   --white:    #ffffff;
+  --bg:       #fdf4f0;
 }
 
-/* ───────────────────────────────────────
-   SCREENS
-─────────────────────────────────────── */
+/* ── SCREENS ── */
 .screen{display:none;}
 .screen.active{display:block;}
 
-/* ───────────────────────────────────────
-   CONFETTI
-─────────────────────────────────────── */
+/* ── CONFETTI ── */
 #confetti-canvas{
   position:fixed;inset:0;
   pointer-events:none;z-index:9999;
 }
 
-/* ═══════════════════════════════════════
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   COUNTDOWN SCREEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#screen-countdown{
+  position:fixed;inset:0;z-index:8888;
+  background:linear-gradient(135deg,#fdf4f0 0%,#fce4d8 40%,#f5d5e8 100%);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:24px;
+  transition:opacity 1s ease, transform 1s ease;
+}
+#screen-countdown.fade-out{
+  opacity:0;
+  transform:scale(1.08);
+  pointer-events:none;
+}
+
+.cd-flowers{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.cd-flower{
+  position:absolute;
+  font-size:2rem;
+  opacity:.35;
+  animation:cdFlowerFloat 4s ease-in-out infinite;
+}
+@keyframes cdFlowerFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  50%{transform:translateY(-18px) rotate(15deg);}
+}
+
+.cd-ring{
+  width:180px;height:180px;border-radius:50%;
+  border:3px solid rgba(212,133,106,.25);
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  animation:ringPulse 1s ease-in-out infinite;
+}
+@keyframes ringPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(212,133,106,.3),0 0 0 0 rgba(212,133,106,.1);}
+  50%{box-shadow:0 0 0 20px rgba(212,133,106,.1),0 0 0 40px rgba(212,133,106,.04);}
+}
+
+.cd-svg-ring{
+  position:absolute;inset:-6px;
+}
+.cd-svg-ring circle{
+  fill:none;stroke:var(--rose);stroke-width:3;stroke-linecap:round;
+  stroke-dasharray:502;
+  stroke-dashoffset:502;
+  transform:rotate(-90deg);transform-origin:center;
+  transition:stroke-dashoffset 0.9s ease;
+}
+
+.cd-num{
+  font-family:'Playfair Display',serif;
+  font-size:7rem;font-weight:900;
+  color:var(--rose);line-height:1;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+}
+.cd-num.pop{
+  animation:numPop .45s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes numPop{
+  0%{transform:scale(.4);opacity:0;}
+  60%{transform:scale(1.18);}
+  100%{transform:scale(1);opacity:1;}
+}
+
+.cd-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;font-style:italic;
+  color:var(--muted);letter-spacing:.08em;
+  animation:fadeUpIn .8s ease both;
+}
+@keyframes fadeUpIn{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:none;}
+}
+
+.cd-sparkles{
+  font-size:1.8rem;
+  display:flex;gap:14px;
+  animation:fadeUpIn 1s .3s ease both;
+}
+.cd-sparkles span{
+  display:inline-block;
+  animation:sparkSpin 2s linear infinite;
+}
+.cd-sparkles span:nth-child(2){animation-direction:reverse;animation-duration:1.5s;}
+.cd-sparkles span:nth-child(3){animation-duration:2.5s;}
+@keyframes sparkSpin{
+  0%,100%{transform:rotate(0) scale(1);}
+  50%{transform:rotate(20deg) scale(1.3);}
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FLOATING FLOWERS GLOBAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.flower-layer{
+  position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;
+}
+.fp{
+  position:absolute;
+  font-size:1.3rem;
+  opacity:0;
+  animation:fpFloat var(--dur,6s) var(--del,0s) ease-in-out infinite;
+}
+@keyframes fpFloat{
+  0%{opacity:0;transform:translateY(0) rotate(0deg) scale(.8);}
+  15%{opacity:.55;}
+  50%{opacity:.45;transform:translateY(-22px) rotate(12deg) scale(1);}
+  85%{opacity:.4;}
+  100%{opacity:0;transform:translateY(4px) rotate(-8deg) scale(.85);}
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    HERO
-═══════════════════════════════════════ */
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #screen-hero{
   min-height:100vh;
-  background:#fdf8f3;
+  background:var(--bg);
+  position:relative;
 }
 
 .hero-wrap{
@@ -63,136 +176,89 @@ body{
   align-items:center;
 }
 
-/* ── left text ── */
+/* left */
 .hero-left{
   padding:72px 52px 72px 72px;
-  display:flex;
-  flex-direction:column;
-  gap:26px;
+  display:flex;flex-direction:column;gap:26px;
+  position:relative;z-index:2;
 }
 
-/* floating emojis top area */
-.hero-emojis{
-  display:flex;
-  gap:14px;
-  margin-bottom:4px;
+/* party emojis */
+.hero-party{
+  display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;
 }
-.hero-emoji{
-  font-size:1.6rem;
+.party-item{
+  font-size:1.8rem;
   display:inline-block;
-  opacity:0;
-  animation:emojiBounceIn .6s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation:partyBounce var(--pd,1.8s) var(--pf,0s) ease-in-out infinite;
 }
-.hero-emoji:nth-child(1){animation-delay:.1s;}
-.hero-emoji:nth-child(2){animation-delay:.25s;}
-.hero-emoji:nth-child(3){animation-delay:.4s;}
-.hero-emoji:nth-child(4){animation-delay:.55s;}
-.hero-emoji:nth-child(5){animation-delay:.7s;}
-.hero-emoji:nth-child(6){animation-delay:.85s;}
-@keyframes emojiBounceIn{
-  0%{opacity:0;transform:translateY(-30px) scale(.5);}
-  100%{opacity:1;transform:translateY(0) scale(1);}
-}
-/* continuous float */
-.hero-emoji{animation-fill-mode:both;}
-.hero-emoji.float{
-  animation:emojiBounceIn .6s cubic-bezier(.34,1.56,.64,1) forwards,
-            emojiFloat 3s ease-in-out infinite;
-  animation-delay: var(--fd,.1s), var(--ff,.1s);
-}
-@keyframes emojiFloat{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-10px);}
+@keyframes partyBounce{
+  0%,100%{transform:translateY(0) rotate(0deg) scale(1);}
+  25%{transform:translateY(-14px) rotate(-8deg) scale(1.15);}
+  50%{transform:translateY(-6px) rotate(4deg) scale(1.05);}
+  75%{transform:translateY(-10px) rotate(-3deg) scale(1.1);}
 }
 
 .hero-eyebrow{
   font-family:'DM Sans',sans-serif;
-  font-size:.68rem;
-  letter-spacing:.22em;
-  text-transform:uppercase;
+  font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
   color:var(--rose);
-  opacity:0;
-  animation:fadeUp .7s .6s ease forwards;
+  opacity:0;animation:fadeUp .7s .3s ease forwards;
 }
 
-/* Typewriter title */
+/* TITLE — infinite typewriter loop */
 .hero-title-wrap{
-  opacity:0;
-  animation:fadeUp .7s .8s ease forwards;
+  opacity:0;animation:fadeUp .7s .5s ease forwards;
 }
 .hero-title-wrap h1{
   font-family:'Great Vibes',cursive;
   font-size:clamp(3rem,5.5vw,5rem);
-  line-height:1.2;
-  color:var(--ink);
+  line-height:1.25;color:var(--ink);
 }
-.hero-title-wrap h1 .typed-word{
+.typed-word{
   color:var(--rose);
-  border-right:3px solid var(--rose);
-  padding-right:4px;
-  white-space:nowrap;
-  overflow:hidden;
   display:inline-block;
-  width:0;
-  vertical-align:bottom;
-  animation:typing 1.8s 1.5s steps(14,end) forwards,
-             blink .7s 3.4s step-end 4;
+  overflow:hidden;white-space:nowrap;vertical-align:bottom;
+  border-right:3px solid var(--rose);
+  animation:typingLoop 5s steps(14,end) infinite;
 }
-@keyframes typing{to{width:12.5ch;}}
-@keyframes blink{0%,100%{border-color:var(--rose);}50%{border-color:transparent;}}
+@keyframes typingLoop{
+  0%     {width:0;border-color:var(--rose);}
+  45%    {width:12.5ch;border-color:var(--rose);}
+  50%    {width:12.5ch;border-color:transparent;}
+  55%    {width:12.5ch;border-color:var(--rose);}
+  70%    {width:12.5ch;border-color:var(--rose);}
+  85%    {width:0;border-color:transparent;}
+  100%   {width:0;border-color:transparent;}
+}
 
 .hero-sub{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(.95rem,1.4vw,1.15rem);
-  font-style:italic;
-  color:var(--muted);
-  line-height:1.9;
-  max-width:420px;
-  opacity:0;
-  animation:fadeUp .7s 1.1s ease forwards;
+  font-size:clamp(.95rem,1.4vw,1.15rem);font-style:italic;
+  color:var(--muted);line-height:1.9;max-width:420px;
+  opacity:0;animation:fadeUp .7s .7s ease forwards;
 }
 .hero-sub strong{color:var(--ink);font-style:normal;}
 
 .hero-stats{
   display:flex;gap:28px;
-  opacity:0;
-  animation:fadeUp .7s 1.3s ease forwards;
+  opacity:0;animation:fadeUp .7s .9s ease forwards;
 }
 .stat-item{display:flex;flex-direction:column;gap:2px;}
 .stat-num{
   font-family:'Playfair Display',serif;
-  font-size:1.9rem;
-  font-weight:900;
-  color:var(--ink);
-  line-height:1;
+  font-size:1.9rem;font-weight:900;color:var(--ink);line-height:1;
 }
-.stat-lbl{
-  font-size:.65rem;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
+.stat-lbl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
 
 .hero-cta{
-  opacity:0;
-  animation:fadeUp .7s 1.5s ease forwards;
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  background:var(--ink);
-  color:#fff;
-  padding:15px 34px;
-  border-radius:4px;
-  border:none;
-  cursor:pointer;
-  font-family:'DM Sans',sans-serif;
-  font-size:.8rem;
-  font-weight:500;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  width:fit-content;
-  position:relative;
-  overflow:hidden;
+  opacity:0;animation:fadeUp .7s 1.1s ease forwards;
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--ink);color:#fff;
+  padding:16px 36px;border-radius:4px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  width:fit-content;position:relative;overflow:hidden;
   transition:transform .3s,box-shadow .3s;
 }
 .hero-cta::after{
@@ -202,7 +268,7 @@ body{
   transition:transform .4s cubic-bezier(.16,1,.3,1);
 }
 .hero-cta span{position:relative;z-index:1;}
-.hero-cta:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(212,133,106,.35);}
+.hero-cta:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(212,133,106,.4);}
 .hero-cta:hover::after{transform:translateX(0);}
 
 @keyframes fadeUp{
@@ -210,27 +276,18 @@ body{
   to{opacity:1;transform:none;}
 }
 
-/* ── right images ── */
+/* right */
 .hero-right{
   height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  background:var(--warm);
-  opacity:0;
-  animation:slideFromRight .9s .3s cubic-bezier(.16,1,.3,1) forwards;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;background:var(--warm);
+  opacity:0;animation:slideFromRight .9s .2s cubic-bezier(.16,1,.3,1) forwards;
 }
-
-/* vertical decorative stripe */
 .hero-right::before{
-  content:'';
-  position:absolute;
-  left:0;top:10%;bottom:10%;
-  width:1px;
+  content:'';position:absolute;
+  left:0;top:10%;bottom:10%;width:1px;
   background:linear-gradient(180deg,transparent,var(--border) 30%,var(--border) 70%,transparent);
 }
-
 @keyframes slideFromRight{
   from{opacity:0;transform:translateX(40px);}
   to{opacity:1;transform:none;}
@@ -241,88 +298,57 @@ body{
   width:clamp(280px,34vw,440px);
   height:clamp(360px,46vw,560px);
 }
-
-/* corner brackets */
 .frame-outer::before,.frame-outer::after{
-  content:'';
-  position:absolute;
+  content:'';position:absolute;
   width:50px;height:50px;
-  border-color:var(--rose);
-  border-style:solid;
-  z-index:4;
+  border-color:var(--rose);border-style:solid;z-index:4;
   transition:all .5s;
 }
 .frame-outer::before{top:-10px;left:-10px;border-width:2px 0 0 2px;}
 .frame-outer::after{bottom:-10px;right:-10px;border-width:0 2px 2px 0;}
-.frame-outer:hover::before{top:-16px;left:-16px;width:64px;height:64px;}
-.frame-outer:hover::after{bottom:-16px;right:-16px;width:64px;height:64px;}
+.frame-outer:hover::before{top:-18px;left:-18px;width:68px;height:68px;}
+.frame-outer:hover::after{bottom:-18px;right:-18px;width:68px;height:68px;}
 
-/* shadow box */
 .frame-shadow{
   position:absolute;
   inset:18px -18px -18px 18px;
   background:var(--rose-pale);
   border:1px solid rgba(212,133,106,.2);
-  border-radius:6px;
-  z-index:0;
+  border-radius:6px;z-index:0;
 }
 
 .img-carousel{
-  position:relative;
-  width:100%;height:100%;
-  border-radius:6px;
-  overflow:hidden;
-  z-index:2;
+  position:relative;width:100%;height:100%;
+  border-radius:6px;overflow:hidden;z-index:2;
   box-shadow:0 24px 70px rgba(0,0,0,.12);
 }
 
 .img-slide{
   position:absolute;inset:0;
-  opacity:0;
-  transition:opacity 1.3s ease;
-  transform:scale(1.03);
-  transition:opacity 1.3s ease, transform 1.3s ease;
+  opacity:0;transition:opacity 1.2s ease;
 }
-.img-slide.active{opacity:1;transform:scale(1);}
+.img-slide.active{opacity:1;}
 .img-slide img{
   width:100%;height:100%;
   object-fit:cover;
   object-position:center top;
   display:block;
+  transform:scale(1.06);
+  transition:transform 6s ease;
 }
+.img-slide.active img{transform:scale(1.0);}
 .img-slide::after{
-  content:'';
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 55%,rgba(26,26,26,.3));
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 55%,rgba(26,26,26,.28));
   pointer-events:none;
 }
 
-/* nav dots */
-.img-nav{
-  position:absolute;
-  bottom:14px;left:50%;
-  transform:translateX(-50%);
-  display:flex;gap:7px;z-index:5;
-}
-.img-nav button{
-  width:28px;height:3px;border-radius:2px;
-  background:rgba(255,255,255,.4);
-  border:none;cursor:pointer;padding:0;
-  transition:all .4s;
-}
-.img-nav button.active{background:#fff;width:40px;}
-
-/* floating tag */
+/* frame tag */
 .frame-tag{
-  position:absolute;
-  top:22px;right:-22px;
-  background:var(--white);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:12px 16px;
-  z-index:6;
-  box-shadow:0 8px 28px rgba(0,0,0,.07);
-  text-align:center;
+  position:absolute;top:22px;right:-22px;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:12px 16px;z-index:6;
+  box-shadow:0 8px 28px rgba(0,0,0,.07);text-align:center;
   animation:tagFloat 3.5s ease-in-out infinite;
 }
 @keyframes tagFloat{
@@ -332,142 +358,116 @@ body{
 .frame-tag .t-emoji{font-size:1.4rem;display:block;}
 .frame-tag .t-txt{font-size:.58rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
 
-/* ═══════════════════════════════════════
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    QUESTION SCREEN
-═══════════════════════════════════════ */
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #screen-question{
-  min-height:100vh;
-  background:#fdf8f3;
+  min-height:100vh;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
+  position:relative;
 }
 .q-inner{
-  text-align:center;
-  padding:60px 24px;
+  text-align:center;padding:60px 24px;
   display:flex;flex-direction:column;align-items:center;gap:24px;
 }
 .q-gift-anim{
-  font-size:5rem;
-  display:inline-block;
-  animation:gBounce 2.2s ease-in-out infinite;
+  font-size:5.5rem;display:inline-block;
+  animation:gBounce 1.8s ease-in-out infinite;
 }
 @keyframes gBounce{
   0%,100%{transform:translateY(0) rotate(-6deg);}
-  40%{transform:translateY(-28px) rotate(6deg) scale(1.1);}
-  70%{transform:translateY(-8px) rotate(-3deg);}
+  35%{transform:translateY(-32px) rotate(8deg) scale(1.12);}
+  65%{transform:translateY(-10px) rotate(-3deg);}
 }
 .q-title{
   font-family:'Playfair Display',serif;
-  font-size:clamp(1.8rem,4vw,2.8rem);
-  font-weight:700;
-  color:var(--ink);
-  line-height:1.3;
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;
+  color:var(--ink);line-height:1.3;
 }
 .q-sub{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.1rem;font-style:italic;
-  color:var(--muted);
+  font-size:1.1rem;font-style:italic;color:var(--muted);
 }
 .q-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
 
 .btn-yes{
-  padding:15px 42px;
+  padding:16px 44px;
   background:var(--rose);color:#fff;
   border:none;border-radius:4px;
-  font-family:'DM Sans',sans-serif;
-  font-size:.8rem;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;
-  cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
   position:relative;overflow:hidden;
   transition:transform .3s,box-shadow .3s;
   animation:yesGlow 2s ease-in-out infinite alternate;
 }
 @keyframes yesGlow{
   from{box-shadow:0 6px 24px rgba(212,133,106,.3);}
-  to{box-shadow:0 10px 40px rgba(212,133,106,.6);}
+  to{box-shadow:0 12px 44px rgba(212,133,106,.7);}
 }
 .btn-yes:hover{transform:translateY(-3px);}
 
 .btn-no{
-  padding:15px 42px;
-  background:transparent;color:var(--muted);
+  padding:16px 44px;background:transparent;color:var(--muted);
   border:1.5px solid var(--border);border-radius:4px;
-  font-family:'DM Sans',sans-serif;
-  font-size:.8rem;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;
-  cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
   transition:all .3s;
 }
 .btn-no:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-2px);}
 
-/* ═══════════════════════════════════════
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    NO SCREEN
-═══════════════════════════════════════ */
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #screen-no{
-  min-height:100vh;
-  background:#fdf8f3;
+  min-height:100vh;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
+  position:relative;
 }
 .no-inner{
   text-align:center;padding:60px 24px;
   display:flex;flex-direction:column;align-items:center;gap:24px;
 }
 .no-row{display:flex;gap:12px;font-size:2.2rem;}
-.no-row span{
-  display:inline-block;
-  animation:sadBounce 1.5s ease-in-out infinite alternate;
-}
+.no-row span{display:inline-block;animation:sadBounce 1.5s ease-in-out infinite alternate;}
 .no-row span:nth-child(2){animation-delay:.2s;}
 .no-row span:nth-child(3){animation-delay:.4s;}
 .no-row span:nth-child(4){animation-delay:.6s;}
-@keyframes sadBounce{from{transform:translateY(0);}to{transform:translateY(12px)scale(.9);}}
-
+@keyframes sadBounce{from{transform:translateY(0);}to{transform:translateY(14px) scale(.9);}}
 .no-title{
   font-family:'Playfair Display',serif;
-  font-size:clamp(1.5rem,3vw,2.2rem);
-  font-weight:700;color:var(--ink);
+  font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:var(--ink);
 }
 .no-msg{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.1rem;line-height:2;
-  color:var(--muted);max-width:460px;
+  font-size:1.1rem;line-height:2;color:var(--muted);max-width:460px;
 }
 .no-msg strong{color:var(--rose);}
 .btn-retry{
-  padding:15px 42px;
-  background:var(--white);color:var(--rose);
+  padding:16px 44px;background:var(--white);color:var(--rose);
   border:1.5px solid var(--rose);border-radius:4px;
-  font-family:'DM Sans',sans-serif;
-  font-size:.8rem;font-weight:500;
-  letter-spacing:.1em;text-transform:uppercase;
-  cursor:pointer;
-  transition:all .3s;
-  animation:retryPulse 2.5s ease-in-out infinite;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .3s;animation:retryPulse 2.5s ease-in-out infinite;
 }
 @keyframes retryPulse{
   0%,100%{box-shadow:0 0 0 0 rgba(212,133,106,0);}
-  50%{box-shadow:0 0 0 10px rgba(212,133,106,.12);}
+  50%{box-shadow:0 0 0 12px rgba(212,133,106,.12);}
 }
 .btn-retry:hover{background:var(--rose);color:#fff;transform:translateY(-2px);}
 
-/* ═══════════════════════════════════════
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    GIFTS SCREEN
-═══════════════════════════════════════ */
-#screen-gifts{
-  background:#fdf8f3;
-}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#screen-gifts{background:var(--bg);}
 
-.gifts-hero{
-  text-align:center;
-  padding:80px 24px 48px;
-}
+.gifts-hero{text-align:center;padding:80px 24px 48px;position:relative;}
 .gifts-eyebrow{
   font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
   color:var(--rose);margin-bottom:10px;
 }
 .gifts-title{
   font-family:'Playfair Display',serif;
-  font-size:clamp(2rem,4vw,3.2rem);
-  font-weight:900;color:var(--ink);
+  font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--ink);
   margin-bottom:8px;
 }
 .gifts-sub{
@@ -475,229 +475,158 @@ body{
   font-size:1.1rem;font-style:italic;color:var(--muted);
 }
 
-/* ─── FLIP CARDS GRID ─── */
+/* ── FLIP GRID ── */
 .flip-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:20px;
-  max-width:880px;
-  margin:0 auto;
-  padding:0 24px 40px;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:20px;max-width:880px;
+  margin:0 auto;padding:0 24px 40px;
 }
-
 .flip-wrap{
-  perspective:1000px;
-  height:180px;
-  cursor:pointer;
+  perspective:1000px;height:180px;cursor:pointer;
 }
-
 .flip-inner{
-  position:relative;
-  width:100%;height:100%;
+  position:relative;width:100%;height:100%;
   transform-style:preserve-3d;
   transition:transform .7s cubic-bezier(.4,0,.2,1);
 }
-
-.flip-wrap.flipped .flip-inner{
-  transform:rotateY(180deg);
-}
-
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg);}
 .flip-face{
-  position:absolute;inset:0;
-  backface-visibility:hidden;
-  border-radius:14px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:10px;
+  position:absolute;inset:0;backface-visibility:hidden;
+  border-radius:14px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;
 }
-
-/* front */
 .flip-front{
-  background:var(--white);
-  border:1.5px solid var(--border);
+  background:var(--white);border:1.5px solid var(--border);
   box-shadow:0 4px 20px rgba(0,0,0,.05);
   transition:box-shadow .3s,transform .3s;
 }
 .flip-wrap:hover .flip-front{
-  box-shadow:0 12px 40px rgba(212,133,106,.15);
-  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(212,133,106,.18);
+  transform:translateY(-5px);
 }
 .flip-wrap.flipped:hover .flip-front{transform:none;}
-
 .front-emoji{
   font-size:2.8rem;
-  animation:giftWiggle 2.5s ease-in-out infinite;
+  animation:giftWiggle 2.2s ease-in-out infinite;
 }
 .flip-wrap:nth-child(2) .front-emoji{animation-delay:.4s;}
 .flip-wrap:nth-child(3) .front-emoji{animation-delay:.8s;}
 .flip-wrap:nth-child(4) .front-emoji{animation-delay:1.2s;}
-
 @keyframes giftWiggle{
   0%,100%{transform:translateY(0) rotate(0deg);}
-  25%{transform:translateY(-8px) rotate(-4deg);}
-  75%{transform:translateY(-4px) rotate(4deg);}
+  25%{transform:translateY(-9px) rotate(-5deg);}
+  75%{transform:translateY(-5px) rotate(5deg);}
 }
 .flip-wrap.flipped .front-emoji{animation:none;}
-
 .front-label{
   font-family:'DM Sans',sans-serif;
-  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--muted);
+  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
 }
-
 .front-dot{
   position:absolute;top:12px;right:12px;
-  width:8px;height:8px;border-radius:50%;
-  background:var(--rose);
-  animation:pulseDot 2s ease-in-out infinite;
+  width:8px;height:8px;border-radius:50%;background:var(--rose);
+  animation:pulseDot 1.8s ease-in-out infinite;
 }
 @keyframes pulseDot{
   0%,100%{transform:scale(1);opacity:.6;}
-  50%{transform:scale(1.7);opacity:1;}
+  50%{transform:scale(1.8);opacity:1;}
 }
 .flip-wrap.flipped .front-dot{opacity:0;}
-
-/* back */
 .flip-back{
   transform:rotateY(180deg);
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:16px;
+  text-align:center;padding:16px;
 }
-
 .back-emoji{font-size:2rem;}
 .back-label{
-  font-family:'DM Sans',sans-serif;
-  font-size:.72rem;font-weight:600;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:#fff;
-  margin-top:4px;
+  font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-top:4px;
 }
 .back-hint{
   font-family:'Cormorant Garamond',serif;
-  font-size:.85rem;font-style:italic;
-  color:rgba(255,255,255,.75);
-  margin-top:2px;
+  font-size:.85rem;font-style:italic;color:rgba(255,255,255,.75);margin-top:2px;
 }
-
-/* per-card back colors */
 .flip-wrap[data-gift="1"] .flip-back{background:linear-gradient(135deg,#d4856a,#b8604a);}
 .flip-wrap[data-gift="2"] .flip-back{background:linear-gradient(135deg,#3aab96,#2a8878);}
 .flip-wrap[data-gift="3"] .flip-back{background:linear-gradient(135deg,#8b6bbf,#6a4ea0);}
 .flip-wrap[data-gift="4"] .flip-back{background:linear-gradient(135deg,#c9963a,#a67820);}
 
-/* ─── REVEAL PANEL ─── */
-.reveal-section{
-  max-width:860px;
-  margin:0 auto;
-  padding:0 24px 60px;
-}
-
-.reveal-panel{
-  max-height:0;overflow:hidden;
-  transition:max-height .8s cubic-bezier(.16,1,.3,1);
-}
-.reveal-panel.open{max-height:1200px;}
-
+/* ── REVEAL PANEL ── */
+.reveal-section{max-width:860px;margin:0 auto;padding:0 24px 60px;}
+.reveal-panel{max-height:0;overflow:hidden;transition:max-height .8s cubic-bezier(.16,1,.3,1);}
+.reveal-panel.open{max-height:1400px;}
 .reveal-card{
-  background:var(--white);
-  border-radius:16px;
-  border:1.5px solid var(--border);
-  padding:48px 52px;
-  position:relative;
-  overflow:hidden;
-  opacity:0;
-  transform:translateY(24px);
+  background:var(--white);border-radius:16px;border:1.5px solid var(--border);
+  padding:48px 52px;position:relative;overflow:hidden;
+  opacity:0;transform:translateY(24px);
   transition:opacity .45s .3s, transform .45s .3s;
   margin-top:12px;
 }
 .reveal-panel.open .reveal-card{opacity:1;transform:none;}
-
-/* top accent bar */
 .reveal-card::before{
-  content:'';
-  position:absolute;top:0;left:0;right:0;height:4px;
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
   background:var(--rc-color,var(--rose));
 }
-
 .rc-close{
   position:absolute;top:18px;right:18px;
   width:30px;height:30px;border-radius:50%;
   background:var(--warm);border:1px solid var(--border);
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;color:var(--muted);
-  transition:all .2s;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:var(--muted);transition:all .2s;
 }
 .rc-close:hover{background:var(--rose);color:#fff;border-color:var(--rose);}
-
 .rc-tag{
   display:inline-flex;align-items:center;gap:8px;
   padding:7px 18px;border-radius:50px;
-  font-family:'DM Sans',sans-serif;
-  font-size:.65rem;font-weight:600;
+  font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:600;
   letter-spacing:.16em;text-transform:uppercase;
-  margin-bottom:20px;
-  border:1px solid transparent;
+  margin-bottom:20px;border:1px solid transparent;
 }
 .rc-title{
   font-family:'Playfair Display',serif;
-  font-size:clamp(1.2rem,2.5vw,1.7rem);
-  font-weight:700;font-style:italic;
-  color:var(--ink);
-  margin-bottom:18px;
+  font-size:clamp(1.2rem,2.5vw,1.7rem);font-weight:700;font-style:italic;
+  color:var(--ink);margin-bottom:18px;
 }
 .rc-body{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(.95rem,1.6vw,1.15rem);
-  line-height:2;color:var(--muted);
+  font-size:clamp(.95rem,1.6vw,1.15rem);line-height:2;color:var(--muted);
 }
 .rc-body strong,.rc-body b{color:var(--ink);font-style:normal;}
 .rc-body .ac{font-style:italic;}
 .rc-body p{margin-bottom:14px;}
 .rc-body p:last-child{margin-bottom:0;}
-
 .poem-block{
-  margin-top:24px;
-  padding:24px 28px;
+  margin-top:24px;padding:24px 28px;
   border-left:3px solid var(--rc-color,var(--rose));
   border-radius:0 8px 8px 0;
   background:var(--rc-bg,var(--rose-pale));
 }
 .poem-lbl{
-  font-family:'DM Sans',sans-serif;
-  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  font-family:'DM Sans',sans-serif;font-size:.6rem;
+  letter-spacing:.2em;text-transform:uppercase;
   color:var(--rc-color,var(--rose));margin-bottom:12px;
 }
 .poem-lines{
   font-family:'Great Vibes',cursive;
-  font-size:clamp(1.2rem,2.5vw,1.6rem);
-  line-height:2;color:var(--ink);
+  font-size:clamp(1.2rem,2.5vw,1.6rem);line-height:2;color:var(--ink);
 }
-
 .yt-wrap{border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,.06);}
 .yt-box{position:relative;padding-bottom:56.25%;height:0;}
 .yt-box iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 
-/* ─── FINAL ─── */
+/* ── FINAL ── */
 .final-sec{
-  background:var(--warm);
-  border-top:1px solid var(--border);
-  padding:80px 24px 100px;
-  text-align:center;
+  background:var(--warm);border-top:1px solid var(--border);
+  padding:80px 24px 100px;text-align:center;position:relative;
 }
 .final-wish{
   font-family:'Great Vibes',cursive;
-  font-size:clamp(2.8rem,6vw,5rem);
-  color:var(--rose);
+  font-size:clamp(2.8rem,6vw,5rem);color:var(--rose);
   display:block;margin-bottom:18px;
   animation:wishGlow 3s ease-in-out infinite alternate;
 }
 @keyframes wishGlow{
-  from{text-shadow:0 0 30px rgba(212,133,106,.2);}
-  to{text-shadow:0 0 60px rgba(212,133,106,.55);}
+  from{text-shadow:0 0 30px rgba(212,133,106,.25);}
+  to{text-shadow:0 0 70px rgba(212,133,106,.65);}
 }
 .final-hearts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:1.5rem;margin-bottom:18px;}
 .final-hearts span{display:inline-block;animation:hFloat 2s ease-in-out infinite alternate;}
@@ -706,47 +635,56 @@ body{
 .final-hearts span:nth-child(4){animation-delay:.6s;}
 .final-hearts span:nth-child(5){animation-delay:.8s;}
 .final-hearts span:nth-child(6){animation-delay:1s;}
-@keyframes hFloat{from{transform:translateY(0);}to{transform:translateY(-12px);}}
-.final-sig{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1rem;font-style:italic;color:var(--muted);
-}
+@keyframes hFloat{from{transform:translateY(0);}to{transform:translateY(-14px);}}
+.final-sig{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--muted);}
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE MOBILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media(max-width:900px){
   .hero-wrap{grid-template-columns:1fr;min-height:auto;}
   .hero-right{
-    height:60vw;min-height:300px;
+    height:72vw;min-height:320px;
     order:-1;
+    padding-top:72px;
+    align-items:flex-start;
+    padding-top:0;
+    padding-bottom:0;
   }
   .hero-right::before{display:none;}
   .hero-left{
-    padding:48px 28px 60px;
+    padding:40px 28px 60px;
     align-items:center;text-align:center;
   }
   .hero-sub{max-width:none;}
   .hero-stats{justify-content:center;}
   .hero-cta{align-self:center;}
   .frame-outer{
-    width:clamp(220px,70vw,360px);
-    height:clamp(280px,60vw,460px);
+    width:clamp(220px,72vw,360px);
+    height:clamp(280px,62vw,460px);
+    margin-top:48px;
   }
-  .frame-tag{top:14px;right:-10px;}
+  .frame-tag{top:60px;right:-8px;}
   .flip-grid{grid-template-columns:repeat(2,1fr);}
-  .reveal-card{padding:32px 24px;}
+  .reveal-card{padding:32px 22px;}
 }
 
 @media(max-width:560px){
-  .hero-left{padding:40px 20px 52px;}
-  .hero-emojis{gap:10px;}
-  .hero-emoji{font-size:1.3rem;}
+  .hero-left{padding:36px 20px 48px;}
+  .hero-party{gap:8px;justify-content:center;}
+  .party-item{font-size:1.5rem;}
+  .frame-outer{
+    margin-top:52px;
+    width:clamp(200px,80vw,340px);
+    height:clamp(260px,75vw,440px);
+  }
   .flip-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-  .flip-wrap{height:156px;}
-  .reveal-card{padding:26px 16px;}
+  .flip-wrap{height:148px;}
+  .reveal-card{padding:24px 14px;}
   .q-btns{flex-direction:column;align-items:center;}
   .btn-yes,.btn-no,.btn-retry{width:100%;max-width:280px;text-align:center;}
+  .cd-num{font-size:5rem;}
+  .cd-ring{width:140px;height:140px;}
 }
 </style>
 </head>
@@ -754,22 +692,48 @@ body{
 
 <canvas id="confetti-canvas"></canvas>
 
-<!-- ═══════════════════════════════════════
-     SCREEN 1 — HERO
-═══════════════════════════════════════ -->
+<!-- FLOATING FLOWERS -->
+<div class="flower-layer" id="flower-layer"></div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     COUNTDOWN OVERLAY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div id="screen-countdown">
+  <div class="cd-flowers" id="cd-flowers"></div>
+
+  <div class="cd-sparkles">
+    <span>🌸</span><span>✨</span><span>🌸</span>
+  </div>
+
+  <div class="cd-ring" id="cd-ring">
+    <svg class="cd-svg-ring" viewBox="0 0 180 180" id="cd-svg">
+      <circle cx="90" cy="90" r="80" id="cd-circle"/>
+    </svg>
+    <div class="cd-num" id="cd-num">5</div>
+  </div>
+
+  <div class="cd-label" id="cd-label">Prépare-toi, Waris… 🎂</div>
+
+  <div class="cd-sparkles">
+    <span>🎉</span><span>🎊</span><span>🎈</span>
+  </div>
+</div>
+
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     HERO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <div class="screen active" id="screen-hero">
   <div class="hero-wrap">
 
-    <!-- LEFT -->
     <div class="hero-left">
-      <!-- animated emojis -->
-      <div class="hero-emojis">
-        <span class="hero-emoji" style="--fd:.1s;--ff:1.8s;">🎂</span>
-        <span class="hero-emoji" style="--fd:.25s;--ff:2.1s;">🎉</span>
-        <span class="hero-emoji" style="--fd:.4s;--ff:1.9s;">🎊</span>
-        <span class="hero-emoji" style="--fd:.55s;--ff:2.3s;">🥂</span>
-        <span class="hero-emoji" style="--fd:.7s;--ff:2s;">✨</span>
-        <span class="hero-emoji" style="--fd:.85s;--ff:2.2s;">🎈</span>
+      <div class="hero-party">
+        <span class="party-item" style="--pd:2s;--pf:0s;">🎉</span>
+        <span class="party-item" style="--pd:1.7s;--pf:.15s;">🎊</span>
+        <span class="party-item" style="--pd:2.2s;--pf:.3s;">🥂</span>
+        <span class="party-item" style="--pd:1.9s;--pf:.45s;">🎈</span>
+        <span class="party-item" style="--pd:2.1s;--pf:.6s;">✨</span>
+        <span class="party-item" style="--pd:1.8s;--pf:.75s;">🪅</span>
       </div>
 
       <p class="hero-eyebrow">✦ en ce jour très spécial ✦</p>
@@ -806,18 +770,11 @@ body{
       </button>
     </div>
 
-    <!-- RIGHT: images -->
     <div class="hero-right">
       <div class="frame-outer">
         <div class="frame-shadow"></div>
 
         <div class="img-carousel" id="carousel">
-          <!--
-            Pour GitHub Pages :
-            Crée un dossier "images" dans ton repo et place tes photos dedans.
-            Nomme-les photo1.jpg, photo2.jpg ... photo6.jpg
-            Les chemins ci-dessous fonctionneront automatiquement.
-          -->
           <div class="img-slide active">
             <img src="images/1.jpeg" alt="Photo 1"
               onerror="this.parentElement.style.background='#fce4ea';this.style.display='none'">
@@ -842,31 +799,21 @@ body{
             <img src="images/6.jpeg" alt="Photo 6"
               onerror="this.parentElement.style.background='#faf0d7';this.style.display='none'">
           </div>
-
-          <div class="img-nav" id="img-nav">
-            <button class="active" onclick="goImg(0)"></button>
-            <button onclick="goImg(1)"></button>
-            <button onclick="goImg(2)"></button>
-            <button onclick="goImg(3)"></button>
-            <button onclick="goImg(4)"></button>
-            <button onclick="goImg(5)"></button>
-          </div>
+          <!-- no nav dots = hidden -->
         </div>
 
         <div class="frame-tag">
-          <span class="t-emoji">🎂</span>
-          <span class="t-txt">Bonne Fête</span>
+          <span class="t-emoji">🌸</span>
+          <span class="t-txt">Pour Waris</span>
         </div>
       </div>
     </div>
 
-  </div><!-- /hero-wrap -->
-</div><!-- /screen-hero -->
+  </div>
+</div>
 
 
-<!-- ═══════════════════════════════════════
-     SCREEN 2 — QUESTION
-═══════════════════════════════════════ -->
+<!-- QUESTION -->
 <div class="screen" id="screen-question">
   <div class="q-inner">
     <span class="q-gift-anim">🎁</span>
@@ -880,9 +827,7 @@ body{
 </div>
 
 
-<!-- ═══════════════════════════════════════
-     SCREEN 3 — NO
-═══════════════════════════════════════ -->
+<!-- NO -->
 <div class="screen" id="screen-no">
   <div class="no-inner">
     <div class="no-row">
@@ -894,16 +839,12 @@ body{
       avec tout mon cœur...<br><br>
       Je te promets que tu vas <strong>adorer</strong>. ❤️‍🔥
     </p>
-    <button class="btn-retry" onclick="goTo('screen-question')">
-      😊 Changer d'avis
-    </button>
+    <button class="btn-retry" onclick="goTo('screen-question')">😊 Changer d'avis</button>
   </div>
 </div>
 
 
-<!-- ═══════════════════════════════════════
-     SCREEN 4 — GIFTS
-═══════════════════════════════════════ -->
+<!-- GIFTS -->
 <div class="screen" id="screen-gifts">
 
   <div class="gifts-hero">
@@ -912,9 +853,7 @@ body{
     <p class="gifts-sub">Clique sur chaque cadeau pour le retourner et le découvrir ✨</p>
   </div>
 
-  <!-- FLIP CARDS -->
   <div class="flip-grid">
-
     <div class="flip-wrap" id="fc1" data-gift="1" onclick="flipCard(1)">
       <div class="flip-inner">
         <div class="flip-face flip-front">
@@ -974,10 +913,8 @@ body{
         </div>
       </div>
     </div>
+  </div>
 
-  </div><!-- /flip-grid -->
-
-  <!-- REVEAL PANEL -->
   <div class="reveal-section">
     <div class="reveal-panel" id="reveal-panel">
       <div class="reveal-card" id="reveal-card">
@@ -987,7 +924,6 @@ body{
     </div>
   </div>
 
-  <!-- FINAL -->
   <div class="final-sec">
     <span class="final-wish">Joyeux Anniversaire !</span>
     <div class="final-hearts">
@@ -997,39 +933,39 @@ body{
     <p class="final-sig">— Ton ami qui t'aime et te souhaite le meilleur dans cette vie 🌟</p>
   </div>
 
-</div><!-- /screen-gifts -->
+</div>
 
 
 <script>
-/* ─── CONFETTI ─── */
+/* ━━━━ CONFETTI ━━━━ */
 const canvas = document.getElementById('confetti-canvas');
 const ctx = canvas.getContext('2d');
 let confOn = false;
-const CC = ['#d4856a','#c9963a','#3aab96','#8b6bbf','#f5e8c4','#fce4ea'];
+const CC = ['#d4856a','#c9963a','#3aab96','#8b6bbf','#f5e8c4','#fce4ea','#ffc0cb'];
 let parts = [], lastT = 0;
 
-function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-resize(); addEventListener('resize', resize);
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); addEventListener('resize',resize);
 
 function mkP(){
   return {
-    x: Math.random()*canvas.width, y:-12,
-    vx:(Math.random()-.5)*5, vy:Math.random()*3+1.5,
+    x:Math.random()*canvas.width,y:-12,
+    vx:(Math.random()-.5)*5,vy:Math.random()*3+1.5,
     sz:Math.random()*8+4,
     col:CC[Math.floor(Math.random()*CC.length)],
-    rot:Math.random()*360, rs:(Math.random()-.5)*10,
+    rot:Math.random()*360,rs:(Math.random()-.5)*10,
     shape:Math.random()>.5?'r':'c'
   };
 }
 function animC(t){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(confOn && t-lastT>38){ for(let i=0;i<6;i++) parts.push(mkP()); lastT=t; }
-  parts = parts.filter(p=>p.y<canvas.height+20);
+  if(confOn && t-lastT>35){for(let i=0;i<7;i++)parts.push(mkP());lastT=t;}
+  parts=parts.filter(p=>p.y<canvas.height+20);
   parts.forEach(p=>{
-    p.x+=p.vx; p.y+=p.vy; p.vy+=.04; p.rot+=p.rs;
-    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
-    ctx.fillStyle=p.col; ctx.globalAlpha=Math.min(1,(canvas.height-p.y)/180);
-    if(p.shape==='r') ctx.fillRect(-p.sz/2,-p.sz/4,p.sz,p.sz/2);
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.rot+=p.rs;
+    ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+    ctx.fillStyle=p.col;ctx.globalAlpha=Math.min(1,(canvas.height-p.y)/180);
+    if(p.shape==='r')ctx.fillRect(-p.sz/2,-p.sz/4,p.sz,p.sz/2);
     else{ctx.beginPath();ctx.arc(0,0,p.sz/2,0,Math.PI*2);ctx.fill();}
     ctx.restore();
   });
@@ -1037,151 +973,167 @@ function animC(t){
 }
 requestAnimationFrame(animC);
 
-/* ─── NAVIGATION ─── */
+/* ━━━━ FLOATING FLOWERS ━━━━ */
+const flowers = ['🌸','🌺','🌷','🌸','🌹','🌸','🌸'];
+const fl = document.getElementById('flower-layer');
+for(let i=0;i<22;i++){
+  const f = document.createElement('span');
+  f.className='fp';
+  f.textContent = flowers[i % flowers.length];
+  const left = Math.random()*98;
+  const top  = Math.random()*98;
+  const dur  = (4 + Math.random()*5).toFixed(1)+'s';
+  const del  = (Math.random()*6).toFixed(1)+'s';
+  f.style.cssText = `left:${left}%;top:${top}%;--dur:${dur};--del:${del};font-size:${.9+Math.random()*1.1}rem;`;
+  fl.appendChild(f);
+}
+
+/* ━━━━ COUNTDOWN ━━━━ */
+(function initCountdown(){
+  const overlay = document.getElementById('screen-countdown');
+  const numEl   = document.getElementById('cd-num');
+  const labelEl = document.getElementById('cd-label');
+  const circle  = document.getElementById('cd-circle');
+  const PERIM    = 2*Math.PI*80; // 502.65
+
+  // countdown flowers
+  const cdf = document.getElementById('cd-flowers');
+  for(let i=0;i<16;i++){
+    const s = document.createElement('span');
+    s.className='cd-flower';
+    s.textContent=flowers[i%flowers.length];
+    s.style.cssText=`left:${Math.random()*94}%;top:${Math.random()*94}%;animation-delay:${(Math.random()*3).toFixed(1)}s;animation-duration:${(3+Math.random()*3).toFixed(1)}s;`;
+    cdf.appendChild(s);
+  }
+
+  const labels = ['','Joyeux anniversaire Waris ! 🎂','Surprise ! 🎁','C\'est parti ! 🎉','Prépare-toi… ✨','Prépare-toi, Waris… 🎂'];
+  let count = 5;
+
+  function setCircle(n){
+    // fills from 5 to 0
+    const ratio = 1 - (n/5);
+    circle.style.strokeDashoffset = PERIM * (1 - ratio);
+  }
+
+  setCircle(5);
+
+  function tick(){
+    numEl.classList.remove('pop');
+    void numEl.offsetWidth;
+    numEl.classList.add('pop');
+    numEl.textContent = count;
+    labelEl.textContent = labels[count] || 'Prépare-toi… ✨';
+    setCircle(count);
+
+    if(count===0){
+      labelEl.textContent = '🎂 Joyeux Anniversaire Waris ! 🎂';
+      confOn=true;
+      setTimeout(()=>{
+        overlay.classList.add('fade-out');
+        setTimeout(()=>{
+          overlay.style.display='none';
+          confOn=false;
+        },1100);
+      },900);
+      return;
+    }
+    count--;
+    setTimeout(tick,1000);
+  }
+
+  setTimeout(tick,600);
+})();
+
+/* ━━━━ NAVIGATION ━━━━ */
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
-
 function goYes(){
   goTo('screen-gifts');
   confOn=true;
-  setTimeout(()=>confOn=false, 6000);
+  setTimeout(()=>confOn=false,6000);
 }
-function goNo(){ goTo('screen-no'); }
+function goNo(){goTo('screen-no');}
 
-/* ─── SLIDESHOW ─── */
+/* ━━━━ SLIDESHOW (no dots) ━━━━ */
 const slides = document.querySelectorAll('.img-slide');
-const navBtns = document.querySelectorAll('#img-nav button');
-let curImg = 0, imgTimer;
+let curImg=0, imgTimer;
 
 function goImg(n){
   slides[curImg].classList.remove('active');
-  navBtns[curImg].classList.remove('active');
-  curImg = (n + slides.length) % slides.length;
+  curImg=(n+slides.length)%slides.length;
   slides[curImg].classList.add('active');
-  navBtns[curImg].classList.add('active');
 }
-
-imgTimer = setInterval(()=>goImg(curImg+1), 4200);
+imgTimer=setInterval(()=>goImg(curImg+1),4000);
 document.getElementById('carousel')?.addEventListener('mouseenter',()=>clearInterval(imgTimer));
 document.getElementById('carousel')?.addEventListener('mouseleave',()=>{
-  imgTimer = setInterval(()=>goImg(curImg+1), 4200);
+  imgTimer=setInterval(()=>goImg(curImg+1),4000);
 });
 
-/* ─── FLIP CARDS & REVEAL ─── */
-const GIFTS = {
-  1:{
-    color:'#d4856a', bg:'#fdf0ea',
-    tag:'💌 Message',
-    title:'Joyeux Anniversaire, Waris !',
-    html:`
-      <p><b>Waris</b>, mon frère, mon ami — aujourd'hui c'est <b>ton grand jour !</b> 🎂</p>
-      <p>Je prends ce moment pour te souhaiter un joyeux anniversaire du fond de mon cœur.
-      Que cette nouvelle année de ta vie soit remplie de <b>bénédictions infinies</b>,
-      de joie, de santé et de succès à chaque tournant de ta vie.</p>
-      <p>Tu mérites tout ce que la vie a de plus beau. Aujourd'hui on célèbre <b>toi</b> —
-      ton sourire, ton énergie, tout ce que tu es et tout ce que tu vas devenir.
-      <span class="ac">Sois heureux aujourd'hui et chaque jour.</span> ❤️🎂✨</p>
-    `
-  },
-  2:{
-    color:'#3aab96', bg:'#ddf5f0',
-    tag:'🤲 Prière',
-    title:'Mes Prières pour toi',
-    html:`
-      <p>Que <b>Allah</b> te bénisse dans chacune de tes respirations et t'accorde
-      une santé de fer, une longue vie pleine de lumière et de paix.</p>
-      <p>Qu'Il t'ouvre les meilleures portes du succès, t'éloigne de tout mal,
-      et qu'Il fasse de chaque jour qui passe un nouveau cadeau.</p>
-      <p>Que <b>Allah</b> <span class="ac">t'accorde Sa grâce et Sa guidance</span>,
-      comble ta famille de bonheur et réalise tous tes rêves les plus profonds.</p>
-      <p><b>Âmine. 🤲</b> Que cette nouvelle année soit ta meilleure. ✨</p>
-    `
-  },
-  3:{
-    color:'#8b6bbf', bg:'#f0ebfb',
-    tag:'🔥 Motivation',
-    title:'Pour toi, mon frère',
-    html:`
-      <p><b>Waris</b>, écoute-moi bien : <span class="ac">c'est maintenant le moment de tout changer.</span></p>
-      <p>Tu as tout en toi — l'intelligence, la force, le cœur, la détermination.
-      Ne laisse rien ni personne te faire douter. Lève-toi chaque matin avec la conviction
-      que <b>tu es destiné à la grandeur.</b></p>
-      <p>Je veux te voir devenir un <b>grand homme</b> — responsable, courageux, solide.
-      Le <b>meilleur des pères</b> pour ta famille. Un exemple pour ceux qui t'entourent.
-      <span class="ac">Le meilleur des hommes. ⭐</span></p>
-      <p>Je crois en toi, <b>Waris</b>. Et je serai là pour le voir. 🦁🔥</p>
-      <div class="poem-block">
-        <div class="poem-lbl">✦ Pour Waris ✦</div>
-        <div class="poem-lines">Tu portes en toi une lumière rare,<br>
-        Celle qui éclaire même dans le noir.<br>
-        Sois grand, sois fort, sois ce que tu es —<br>
-        Le monde a besoin de toi. 🌙</div>
-      </div>
-    `
-  },
-  4:{
-    color:'#c9963a', bg:'#faf0d7',
-    tag:'🎬 Vidéo',
-    title:'Un petit cadeau vidéo',
-    html:`
-      <div class="yt-wrap">
-        <div class="yt-box">
-          <iframe src="https://www.youtube.com/embed/LbBV9rVIe9Q?rel=0&modestbranding=1"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
-        </div>
-      </div>
-    `
-  }
+/* ━━━━ FLIP CARDS ━━━━ */
+const GIFTS={
+  1:{color:'#d4856a',bg:'#fdf0ea',
+    tag:'💌 Message',title:'Joyeux Anniversaire, Waris !',
+    html:`<p><b>Waris</b>, mon frère, mon ami — aujourd'hui c'est <b>ton grand jour !</b> 🎂</p>
+    <p>Je prends ce moment pour te souhaiter un joyeux anniversaire du fond de mon cœur. Que cette nouvelle année de ta vie soit remplie de <b>bénédictions infinies</b>, de joie, de santé et de succès à chaque tournant de ta vie.</p>
+    <p>Tu mérites tout ce que la vie a de plus beau. Aujourd'hui on célèbre <b>toi</b> — ton sourire, ton énergie, tout ce que tu es et tout ce que tu vas devenir. <span class="ac">Sois heureux aujourd'hui et chaque jour.</span> ❤️🎂✨</p>`},
+  2:{color:'#3aab96',bg:'#ddf5f0',
+    tag:'🤲 Prière',title:'Mes Prières pour toi',
+    html:`<p>Que <b>Allah</b> te bénisse dans chacune de tes respirations et t'accorde une santé de fer, une longue vie pleine de lumière et de paix.</p>
+    <p>Qu'Il t'ouvre les meilleures portes du succès, t'éloigne de tout mal, et qu'Il fasse de chaque jour qui passe un nouveau cadeau.</p>
+    <p>Que <b>Allah</b> <span class="ac">t'accorde Sa grâce et Sa guidance</span>, comble ta famille de bonheur et réalise tous tes rêves les plus profonds.</p>
+    <p><b>Âmine. 🤲</b> Que cette nouvelle année soit ta meilleure. ✨</p>`},
+  3:{color:'#8b6bbf',bg:'#f0ebfb',
+    tag:'🔥 Motivation',title:'Pour toi, mon frère',
+    html:`<p><b>Waris</b>, écoute-moi bien : <span class="ac">c'est maintenant le moment de tout changer.</span></p>
+    <p>Tu as tout en toi — l'intelligence, la force, le cœur, la détermination. Ne laisse rien ni personne te faire douter. Lève-toi chaque matin avec la conviction que <b>tu es destiné à la grandeur.</b></p>
+    <p>Je veux te voir devenir un <b>grand homme</b> — responsable, courageux, solide. Le <b>meilleur des pères</b> pour ta famille. Un exemple pour ceux qui t'entourent. <span class="ac">Le meilleur des hommes. ⭐</span></p>
+    <p>Je crois en toi, <b>Waris</b>. Et je serai là pour le voir. 🦁🔥</p>
+    <div class="poem-block"><div class="poem-lbl">✦ Pour Waris ✦</div>
+    <div class="poem-lines">Tu portes en toi une lumière rare,<br>Celle qui éclaire même dans le noir.<br>Sois grand, sois fort, sois ce que tu es —<br>Le monde a besoin de toi. 🌙</div></div>`},
+  4:{color:'#c9963a',bg:'#faf0d7',
+    tag:'🎬 Vidéo',title:'Un petit cadeau vidéo',
+    html:`<div class="yt-wrap"><div class="yt-box">
+    <iframe src="https://www.youtube.com/embed/LbBV9rVIe9Q?rel=0&modestbranding=1"
+      allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
+      allowfullscreen></iframe></div></div>`}
 };
 
-let openId = 0;
+let openId=0;
 
 function flipCard(n){
-  const card = document.getElementById('fc'+n);
-  const panel = document.getElementById('reveal-panel');
-  const revCard = document.getElementById('reveal-card');
-  const content = document.getElementById('reveal-content');
+  const card=document.getElementById('fc'+n);
+  const panel=document.getElementById('reveal-panel');
+  const revCard=document.getElementById('reveal-card');
+  const content=document.getElementById('reveal-content');
 
-  // flip the card (stays flipped)
   card.classList.add('flipped');
 
-  // if clicking the already-open one → just scroll back
-  if(openId === n){
+  if(openId===n){
     panel.scrollIntoView({behavior:'smooth',block:'start'});
     return;
   }
-
-  openId = n;
-
-  const g = GIFTS[n];
-  revCard.style.setProperty('--rc-color', g.color);
-  revCard.style.setProperty('--rc-bg', g.bg);
-
-  content.innerHTML = `
+  openId=n;
+  const g=GIFTS[n];
+  revCard.style.setProperty('--rc-color',g.color);
+  revCard.style.setProperty('--rc-bg',g.bg);
+  content.innerHTML=`
     <div class="rc-tag" style="background:${g.bg};color:${g.color};border-color:${g.color}40;">${g.tag}</div>
     <h3 class="rc-title">${g.title}</h3>
-    <div class="rc-body">${g.html}</div>
-  `;
-
+    <div class="rc-body">${g.html}</div>`;
   panel.classList.remove('open');
   void panel.offsetHeight;
   panel.classList.add('open');
-
-  confOn = true;
-  setTimeout(()=>confOn=false, 2500);
-
-  setTimeout(()=>{
-    panel.scrollIntoView({behavior:'smooth',block:'start'});
-  },200);
+  confOn=true;
+  setTimeout(()=>confOn=false,2500);
+  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),200);
 }
 
 function closeReveal(){
   document.getElementById('reveal-panel').classList.remove('open');
-  openId = 0;
+  openId=0;
 }
 </script>
 </body>
